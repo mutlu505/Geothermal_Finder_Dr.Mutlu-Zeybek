@@ -110,9 +110,10 @@ def draw_zeybek2_with_coordinates():
         # Add main label
         center_x = block["x"] + block["width"] / 2
         center_y = block["y"] + block["height"] / 2
+
         ax.text(
             center_x,
-            center_y + 0.5,
+            center_y + 0.9,
             block["label"],
             ha="center",
             va="center",
@@ -121,7 +122,7 @@ def draw_zeybek2_with_coordinates():
         )
         ax.text(
             center_x,
-            center_y - 0.5,
+            center_y + 1.4,
             block["sub"],
             ha="center",
             va="center",
@@ -279,7 +280,7 @@ def draw_zeybek2_with_coordinates():
     # Add coordinate labels for target zone boundaries
     ax.text(
         x2,
-        y2 + 0.8,
+        y2 + 1.0,
         f"x₂={x2:.1f}",
         ha="center",
         va="bottom",
@@ -289,7 +290,7 @@ def draw_zeybek2_with_coordinates():
     )
     ax.text(
         x4,
-        y2 + 0.8,
+        y2 + 1.0,
         f"x₄={x4:.1f}",
         ha="center",
         va="bottom",
@@ -321,7 +322,7 @@ def draw_zeybek2_with_coordinates():
     # Add equation box for target calculation
     equation_text = f"G = ((x₂+x₄)/2, (y₀+y₂)/2)\nG = (({x2:.1f}+{x4:.1f})/2, ({y0:.1f}+{y2:.1f})/2)\nG = ({g_x:.1f}, {g_y:.1f})"
     ax.text(
-        x6 + 0.8,
+        x6 + 1.8,
         (y0 + y2) / 2,
         equation_text,
         fontsize=11,
@@ -452,7 +453,9 @@ def draw_zeybek2_with_coordinates():
         patches.Patch(facecolor="#4ECDC4", alpha=0.7, label="L2: Reservoir Rock"),
         patches.Patch(facecolor="#FFE66D", alpha=0.7, label="L3: Cap Rock (Seal)"),
         patches.Patch(
-            facecolor="#FF1493", alpha=0.8, label="G: Geothermal Reservoir (Target)"
+            facecolor="#FF1493",
+            alpha=0.8,
+            label="G: Geothermal Reservoir (Target)",
         ),
         plt.Line2D(
             [0],
@@ -684,3 +687,5 @@ if __name__ == "__main__":
     plt.savefig("zeybek2_model_3d_coordinates.png", dpi=300, bbox_inches="tight")
     plt.savefig("zeybek2_model_3d_coordinates.pdf", bbox_inches="tight")
     plt.show()
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
