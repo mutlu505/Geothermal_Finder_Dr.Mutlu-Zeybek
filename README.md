@@ -633,3 +633,248 @@ if __name__ == "__main__":
     plt.show()
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+from matplotlib.patches import Patch
+import matplotlib
+
+# Use non-interactive backend if needed
+matplotlib.use("Agg")
+
+
+def create_geothermal_diagram():
+    """Create a simplified geothermal system diagram with proper legend and labels"""
+
+    fig = plt.figure(figsize=(14, 10))
+    ax = fig.add_subplot(111, projection="3d")
+
+    # Define blocks with their properties - REVISED POSITIONS
+    blocks = [
+        # Left L1 (Heat Source) - extending out and completely below L2
+        {
+            "x1": -7.5,
+            "x2": -5.5,
+            "y1": -2.0,
+            "y2": 2.0,
+            "z1": -4.0,
+            "z2": -1.5,
+            "color": "#ff6b35",
+            "label": "L1",
+            "alpha": 0.85,
+        },
+        # Left L2 (Reservoir) - completely above L1 and below L3
+        {
+            "x1": -5.5,
+            "x2": -1.5,
+            "y1": -1.8,
+            "y2": 1.8,
+            "z1": -1.5,
+            "z2": 0.0,
+            "color": "#4ecdc4",
+            "label": "L2",
+            "alpha": 0.85,
+        },
+        # L3 (Cap Rock) - at the top center
+        {
+            "x1": -1.5,
+            "x2": 1.5,
+            "y1": -1.8,
+            "y2": 1.8,
+            "z1": 0.0,
+            "z2": 1.5,
+            "color": "#ffe66d",
+            "label": "L3",
+            "alpha": 0.85,
+        },
+        # Right L2 (Reservoir) - completely above L1 and below L3
+        {
+            "x1": 1.5,
+            "x2": 5.5,
+            "y1": -1.8,
+            "y2": 1.8,
+            "z1": -1.5,
+            "z2": 0.0,
+            "color": "#4ecdc4",
+            "label": "L2",
+            "alpha": 0.85,
+        },
+        # Right L1 (Heat Source) - extending out and completely below L2
+        {
+            "x1": 5.5,
+            "x2": 7.5,
+            "y1": -2.0,
+            "y2": 2.0,
+            "z1": -4.0,
+            "z2": -1.5,
+            "color": "#ff6b35",
+            "label": "L1",
+            "alpha": 0.85,
+        },
+    ]
+
+    def add_box(ax, x1, x2, y1, y2, z1, z2, color, label, alpha):
+        """Add a 3D box to the plot"""
+        vertices = np.array(
+            [
+                [x1, y1, z1],
+                [x2, y1, z1],
+                [x2, y2, z1],
+                [x1, y2, z1],
+                [x1, y1, z2],
+                [x2, y1, z2],
+                [x2, y2, z2],
+                [x1, y2, z2],
+            ]
+        )
+        faces = [
+            [vertices[0], vertices[1], vertices[2], vertices[3]],
+            [vertices[4], vertices[5], vertices[6], vertices[7]],
+            [vertices[0], vertices[1], vertices[5], vertices[4]],
+            [vertices[2], vertices[3], vertices[7], vertices[6]],
+            [vertices[0], vertices[3], vertices[7], vertices[4]],
+            [vertices[1], vertices[2], vertices[6], vertices[5]],
+        ]
+        poly = Poly3DCollection(faces, alpha=alpha, edgecolor="black", linewidth=1.0)
+        poly.set_facecolor(color)
+        ax.add_collection3d(poly)
+
+        # REMOVED: Label text on each box
+        # No text added to the boxes
+
+    # Add all blocks
+    for block in blocks:
+        add_box(
+            ax,
+            block["x1"],
+            block["x2"],
+            block["y1"],
+            block["y2"],
+            block["z1"],
+            block["z2"],
+            block["color"],
+            block["label"],
+            block["alpha"],
+        )
+
+    # Draw fault lines with prominent labels F1, F2, F3, F4
+    fault_positions = [-5.5, -1.5, 1.5, 5.5]
+    fault_labels = ["F1", "F2", "F3", "F4"]
+
+    for i, (x, f_label) in enumerate(zip(fault_positions, fault_labels)):
+        # Draw vertical fault lines - extending through all layers
+        ax.plot([x, x], [-2.5, 2.5], [-4.5, 2.0], "k--", linewidth=3, alpha=0.9)
+
+        # REMOVED: Fault labels at top and bottom
+        # No text added for faults
+
+    # REMOVED: All structural labels (Graben, Horst, G, depth labels, etc.)
+
+    # REMOVED: Geothermal target G and glow effects
+
+    # REMOVED: Temperature and fluid flow indicators
+
+    # REMOVED: Depth labels on the side
+
+    # Create legend with the specified labels
+    legend_elements = [
+        Patch(
+            facecolor="#ff6b35",
+            alpha=0.85,
+            edgecolor="black",
+            label="L1: Heat Source Rock",
+        ),
+        Patch(
+            facecolor="#4ecdc4",
+            alpha=0.85,
+            edgecolor="black",
+            label="L2: Reservoir Rock",
+        ),
+        Patch(
+            facecolor="#ffe66d",
+            alpha=0.85,
+            edgecolor="black",
+            label="L3: Cap Rock (Seal)",
+        ),
+        Patch(
+            facecolor="none",
+            edgecolor="black",
+            linestyle="--",
+            linewidth=3,
+            label="F1-F4: Fault Lines",
+        ),
+    ]
+
+    # Add legend to the figure
+    legend = ax.legend(
+        handles=legend_elements,
+        loc="upper left",
+        fontsize=12,
+        framealpha=0.95,
+        edgecolor="black",
+        bbox_to_anchor=(0.02, 0.98),
+        ncol=1,
+    )
+    legend.get_frame().set_facecolor("white")
+
+    # Add a title with subtitle
+    ax.set_xlabel("X Distance (km) (East)", fontsize=13, labelpad=12, weight="bold")
+    ax.set_ylabel("Y Distance (km) (North)", fontsize=13, labelpad=12, weight="bold")
+    ax.set_zlabel("Depth (km)", fontsize=13, labelpad=12, weight="bold")
+
+    plt.suptitle(
+        "3D Horst-Graben Geothermal System Model", fontsize=18, weight="bold", y=0.98
+    )
+    ax.set_title(
+        "ZEYBEK-2 Geothermal Prospect\nStructural controls on geothermal resources",
+        fontsize=13,
+        pad=20,
+        style="italic",
+    )
+
+    # View settings for optimal visualization
+    ax.view_init(elev=55, azim=-77)
+    ax.invert_zaxis()
+    ax.set_xlim([-9.0, 9.0])
+    ax.set_ylim([-3.5, 3.5])
+    ax.set_zlim([-3.5, 3.5])
+
+    # Enhanced grid
+    ax.grid(True, alpha=0.2, linestyle="--", linewidth=0.5)
+
+    # Set axis ticks - Depth axis will be clearly visible
+    ax.set_xticks([-7, -5, -3, -1, 0, 1, 3, 5, 7])
+    ax.set_yticks([-2, -1, 0, 1, 2])
+    ax.set_zticks([-4, -3, -2, -1, 0, 1])
+
+    # Make depth axis labels more prominent
+    ax.zaxis.label.set_size(14)
+    ax.zaxis.label.set_weight("bold")
+
+    plt.tight_layout()
+    return fig
+
+
+# Create and save the figure
+print("Generating geothermal system diagram with legend only...")
+fig = create_geothermal_diagram()
+fig.savefig("zeybek_geothermal_3d_legend_only.png", dpi=300, bbox_inches="tight")
+print("✓ Diagram saved as 'zeybek_geothermal_3d_legend_only.png'")
+print("\n✓ All figure text removed:")
+print("  - No L1, L2, L3 labels on blocks")
+print("  - No F1, F2, F3, F4 labels on fault lines")
+print("  - No Graben/Horst labels")
+print("  - No G target label")
+print("  - No depth annotations or temperature indicators")
+print("  - Legend retained with all descriptions")
+print("  - Depth axis (km) clearly visible with tick marks")
+
+# If you want to try displaying it interactively
+try:
+    plt.show()
+except:
+    print("\nInteractive display not available. Image has been saved as PNG file.")
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
