@@ -18,6 +18,7 @@ def draw_zeybek2_with_coordinates():
     """
     Draws Figure 1 from the ZEYBEK-2 Model paper with full coordinate system
     showing the geometric configuration and explicit coordinate labels.
+    Includes North Arrow and Scale Bar.
     """
 
     # Create figure with specific size
@@ -42,14 +43,14 @@ def draw_zeybek2_with_coordinates():
             "hatch": "///",
             "alpha": 0.7,
         },
-        # Left Reservoir (L2) - between F1 and F2
+        # Left Reservoir Rock (L2) - between F1 and F2
         {
             "x": x1,
             "y": y0,
             "width": x2 - x1,
             "height": y2 - y0,
             "label": "L2",
-            "sub": "Reservoir",
+            "sub": "Reservoir Rock",
             "color": "#4ECDC4",
             "hatch": "...",
             "alpha": 0.7,
@@ -66,14 +67,14 @@ def draw_zeybek2_with_coordinates():
             "hatch": "xxx",
             "alpha": 0.7,
         },
-        # Right Reservoir (L2) - between F3 and F4
+        # Right Reservoir Rock (L2) - between F3 and F4
         {
             "x": x4,
             "y": y0,
             "width": x5 - x4,
             "height": y2 - y0,
             "label": "L2",
-            "sub": "Reservoir",
+            "sub": "Reservoir Rock",
             "color": "#4ECDC4",
             "hatch": "...",
             "alpha": 0.7,
@@ -402,6 +403,104 @@ def draw_zeybek2_with_coordinates():
         va="center",
         fontsize=10,
         color="purple",
+    )
+
+    # ============================================
+    # NORTH ARROW
+    # ============================================
+    north_x = 10.0
+    north_y = 7.5
+
+    # North arrow body (line)
+    ax.annotate(
+        "",
+        xy=(north_x, north_y + 1.0),
+        xytext=(north_x, north_y),
+        arrowprops=dict(arrowstyle="->", lw=3, color="black", mutation_scale=30),
+    )
+
+    # North arrowhead (filled triangle)
+    ax.plot(
+        north_x,
+        north_y + 1.0,
+        "^",
+        markersize=15,
+        color="black",
+        markeredgecolor="black",
+    )
+
+    # "N" label
+    ax.text(
+        north_x - 0.12,
+        north_y + 1.3,
+        "N",
+        fontsize=16,
+        fontweight="bold",
+        color="black",
+        ha="left",
+        va="center",
+    )
+
+    # ============================================
+    # SCALE BAR
+    # ============================================
+    scale_bar_x = 8.5
+    scale_bar_y = -0.3
+
+    # Scale bar length in coordinate units (2 units)
+    scale_length = 2.0
+
+    # Draw scale bar (horizontal line)
+    ax.plot(
+        [scale_bar_x, scale_bar_x + scale_length],
+        [scale_bar_y, scale_bar_y],
+        "k-",
+        linewidth=3,
+    )
+
+    # End ticks
+    ax.plot(
+        [scale_bar_x, scale_bar_x],
+        [scale_bar_y - 0.15, scale_bar_y + 0.15],
+        "k-",
+        linewidth=2,
+    )
+    ax.plot(
+        [scale_bar_x + scale_length, scale_bar_x + scale_length],
+        [scale_bar_y - 0.15, scale_bar_y + 0.15],
+        "k-",
+        linewidth=2,
+    )
+
+    # Scale bar labels
+    ax.text(
+        scale_bar_x,
+        scale_bar_y - 0.3,
+        "0",
+        ha="center",
+        va="top",
+        fontsize=11,
+        fontweight="bold",
+    )
+    ax.text(
+        scale_bar_x + scale_length,
+        scale_bar_y - 0.3,
+        f"{scale_length:.0f} km",
+        ha="center",
+        va="top",
+        fontsize=11,
+        fontweight="bold",
+    )
+
+    # Scale bar label
+    ax.text(
+        scale_bar_x + scale_length / 2,
+        scale_bar_y - 0.9,
+        "Scale",
+        ha="center",
+        va="top",
+        fontsize=10,
+        fontstyle="italic",
     )
 
     # Add coordinate axis labels with arrowheads
