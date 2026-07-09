@@ -30,14 +30,14 @@ def draw_zeybek2_with_coordinates():
 
     # Define blocks with colors and labels
     blocks = [
-        # Left Source Rock (L1) - between F4 and F1
+        # Left Heat Source Rock (L1) - between F4 and F1
         {
             "x": x0,
             "y": y0,
             "width": x1 - x0,
             "height": y2 - y0,
             "label": "L1",
-            "sub": "Source Rock",
+            "sub": "Heat Source Rock",
             "color": "#FF6B6B",
             "hatch": "///",
             "alpha": 0.7,
@@ -78,14 +78,14 @@ def draw_zeybek2_with_coordinates():
             "hatch": "...",
             "alpha": 0.7,
         },
-        # Right Source Rock (L1) - beyond F4
+        # Right Heat Source Rock (L1) - beyond F4
         {
             "x": x5,
             "y": y0,
             "width": x6 - x5,
             "height": y2 - y0,
             "label": "L1",
-            "sub": "Source Rock",
+            "sub": "Heat Source Rock",
             "color": "#FF6B6B",
             "hatch": "///",
             "alpha": 0.7,
@@ -449,7 +449,7 @@ def draw_zeybek2_with_coordinates():
 
     # Add legend
     legend_elements = [
-        patches.Patch(facecolor="#FF6B6B", alpha=0.7, label="L1: Heat Source"),
+        patches.Patch(facecolor="#FF6B6B", alpha=0.7, label="L1: Heat Source Rock"),
         patches.Patch(facecolor="#4ECDC4", alpha=0.7, label="L2: Reservoir Rock"),
         patches.Patch(facecolor="#FFE66D", alpha=0.7, label="L3: Cap Rock (Seal)"),
         patches.Patch(
