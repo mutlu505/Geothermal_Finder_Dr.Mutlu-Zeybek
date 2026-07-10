@@ -814,7 +814,7 @@ def create_geothermal_diagram():
         fontsize=12,
         framealpha=0.95,
         edgecolor="black",
-        bbox_to_anchor=(0.02, 0.98),
+        bbox_to_anchor=(0.10, 0.95),
         ncol=1,
     )
     legend.get_frame().set_facecolor("white")
