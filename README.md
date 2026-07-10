@@ -1,8 +1,7 @@
 # Geothermal_Finder_Dr.Mutlu-Zeybek
 Geothermal_Finder_Dr.Mutlu Zeybek
 """
-ZEYBEK-2 Model: A Rule-Based Expert System for Systematic, Geometry-Driven Targeting 
-of Fault-Controlled Geothermal Reservoirs
+A Pedagogical and Geometric Heuristic Framework for Geothermal Reservoir Exploration Targeting
 
 Author: Mutlu ZEYBEK
 Affiliation: Muğla Metropolitan Municipality, Muğla, Turkey
