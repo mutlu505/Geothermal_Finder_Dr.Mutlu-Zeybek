@@ -878,3 +878,160 @@ except:
     print("\nInteractive display not available. Image has been saved as PNG file.")
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+import numpy as np
+
+# Create figure
+fig, ax = plt.subplots(1, 1, figsize=(12, 10))
+ax.set_xlim(0, 10)
+ax.set_ylim(0, 10)
+ax.axis("off")
+
+
+# Define box function
+def draw_box(ax, x, y, width, height, text, color="lightblue", text_color="black"):
+    box = FancyBboxPatch(
+        (x, y),
+        width,
+        height,
+        boxstyle="round,pad=0.1",
+        facecolor=color,
+        edgecolor="black",
+        linewidth=2,
+    )
+    ax.add_patch(box)
+    ax.text(
+        x + width / 2,
+        y + height / 2,
+        text,
+        ha="center",
+        va="center",
+        fontsize=10,
+        fontweight="bold",
+        color=text_color,
+    )
+
+
+# Define arrow function
+def draw_arrow(ax, x1, y1, x2, y2):
+    arrow = FancyArrowPatch(
+        (x1, y1),
+        (x2, y2),
+        arrowstyle="->",
+        mutation_scale=20,
+        linewidth=2,
+        color="black",
+    )
+    ax.add_patch(arrow)
+
+
+# STEP 1: INPUT DATA
+draw_box(
+    ax,
+    3.5,
+    8.5,
+    3,
+    0.8,
+    "STEP 1: INPUT DATA\n(Geology, Geophysics, Geochemistry)",
+    color="#E8F4FD",
+)
+
+# Arrow down
+draw_arrow(ax, 5, 8.5, 5, 7.8)
+
+# STEP 2: DIGITIZE
+draw_box(
+    ax,
+    3.5,
+    6.8,
+    3,
+    0.8,
+    "STEP 2: DIGITIZE FEATURES\n(Identify L3, F2, F3 boundaries)",
+    color="#FFF3E0",
+)
+
+# Arrow down
+draw_arrow(ax, 5, 6.8, 5, 6.1)
+
+# STEP 3: ALGORITHM
+draw_box(
+    ax,
+    3.0,
+    5.1,
+    4,
+    0.8,
+    "STEP 3: APPLY ZEYBEK-2 RULES\n(Contiguity → Boundary → Trap Axioms)",
+    color="#E8F5E9",
+)
+
+# Arrow down
+draw_arrow(ax, 5, 5.1, 5, 4.4)
+
+# STEP 4: OUTPUT
+draw_box(
+    ax, 3.5, 3.4, 3, 0.8, "STEP 4: TARGET COORDINATE\nG = (x₃, y₁)", color="#FFE0B2"
+)
+
+# Arrow down
+draw_arrow(ax, 5, 3.4, 5, 2.7)
+
+# STEP 5: HYPOTHESIS
+draw_box(
+    ax,
+    3.0,
+    1.8,
+    4,
+    0.8,
+    "STEP 5: TESTABLE HYPOTHESIS\n(Drill or Detailed Survey)",
+    color="#F3E5F5",
+)
+
+# Arrow to iterative loop
+draw_arrow(ax, 7, 2.2, 8.5, 2.2)
+
+# Feedback loop box
+draw_box(
+    ax,
+    8.5,
+    1.8,
+    1.2,
+    0.8,
+    "FEEDBACK\n(Validate/\nRefine)",
+    color="#FFCDD2",
+    text_color="black",
+)
+
+# Feedback arrow going back up (curved)
+arrow = FancyArrowPatch(
+    (9.1, 2.8),
+    (9.1, 5.5),
+    arrowstyle="->",
+    mutation_scale=20,
+    linewidth=2,
+    color="#D32F2F",
+    linestyle="dashed",
+)
+ax.add_patch(arrow)
+ax.text(
+    9.4, 3.6, "Iterate", rotation=90, fontsize=9, color="#D32F2F", fontweight="bold"
+)
+
+# Title
+ax.text(
+    5,
+    9.6,
+    "ZEYBEK-2 Model Workflow",
+    ha="center",
+    va="center",
+    fontsize=16,
+    fontweight="bold",
+)
+
+plt.tight_layout()
+plt.savefig("zeybek2_workflow.png", dpi=300, bbox_inches="tight")
+plt.show()
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
