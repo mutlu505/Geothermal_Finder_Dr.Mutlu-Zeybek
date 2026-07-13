@@ -1034,3 +1034,655 @@ plt.savefig("zeybek2_workflow.png", dpi=300, bbox_inches="tight")
 plt.show()
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+"""
+Major Geothermal Fields World Map Visualization
+This script plots major geothermal fields and belts on a world map using cartopy and matplotlib.
+"""
+
+import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+import pandas as pd
+import numpy as np
+from matplotlib.patches import Circle
+from matplotlib.lines import Line2D
+
+# ============================================================================
+# DATA: Major Geothermal Fields and Belts Worldwide
+# ============================================================================
+
+# Major geothermal fields with coordinates (latitude, longitude) and capacity (MW)
+geothermal_fields = [
+    # North America
+    {
+        "name": "The Geysers",
+        "lat": 38.8,
+        "lon": -122.8,
+        "capacity": 725,
+        "country": "USA",
+    },
+    {
+        "name": "Salton Sea",
+        "lat": 33.2,
+        "lon": -115.6,
+        "capacity": 400,
+        "country": "USA",
+    },
+    {"name": "Coso", "lat": 36.0, "lon": -117.8, "capacity": 270, "country": "USA"},
+    {
+        "name": "Cerro Prieto",
+        "lat": 32.4,
+        "lon": -115.3,
+        "capacity": 720,
+        "country": "Mexico",
+    },
+    {
+        "name": "Los Azufres",
+        "lat": 19.8,
+        "lon": -100.6,
+        "capacity": 188,
+        "country": "Mexico",
+    },
+    # Central & South America
+    {
+        "name": "Las Pailas",
+        "lat": 10.8,
+        "lon": -85.3,
+        "capacity": 42,
+        "country": "Costa Rica",
+    },
+    {
+        "name": "Miravalles",
+        "lat": 10.6,
+        "lon": -85.0,
+        "capacity": 174,
+        "country": "Costa Rica",
+    },
+    {
+        "name": "Ahuachapan",
+        "lat": 13.9,
+        "lon": -89.8,
+        "capacity": 95,
+        "country": "El Salvador",
+    },
+    {
+        "name": "Berlin",
+        "lat": 13.5,
+        "lon": -88.5,
+        "capacity": 109,
+        "country": "El Salvador",
+    },
+    {
+        "name": "Momotombo",
+        "lat": 12.4,
+        "lon": -86.5,
+        "capacity": 77,
+        "country": "Nicaragua",
+    },
+    # Europe
+    {
+        "name": "Larderello",
+        "lat": 43.3,
+        "lon": 10.9,
+        "capacity": 800,
+        "country": "Italy",
+    },
+    {
+        "name": "Mt. Amiata",
+        "lat": 42.9,
+        "lon": 11.6,
+        "capacity": 100,
+        "country": "Italy",
+    },
+    {
+        "name": "Hengill",
+        "lat": 64.1,
+        "lon": -21.3,
+        "capacity": 303,
+        "country": "Iceland",
+    },
+    {"name": "Krafla", "lat": 65.7, "lon": -16.8, "capacity": 60, "country": "Iceland"},
+    {
+        "name": "Nesjavellir",
+        "lat": 64.1,
+        "lon": -21.2,
+        "capacity": 120,
+        "country": "Iceland",
+    },
+    {
+        "name": "Soultz-sous-Forêts",
+        "lat": 48.9,
+        "lon": 7.9,
+        "capacity": 1.5,
+        "country": "France",
+    },
+    {"name": "Tuscany", "lat": 43.0, "lon": 11.0, "capacity": 200, "country": "Italy"},
+    # Asia
+    {
+        "name": "Wayang Windu",
+        "lat": -7.2,
+        "lon": 107.6,
+        "capacity": 227,
+        "country": "Indonesia",
+    },
+    {
+        "name": "Darajat",
+        "lat": -7.2,
+        "lon": 107.8,
+        "capacity": 255,
+        "country": "Indonesia",
+    },
+    {
+        "name": "Salak",
+        "lat": -6.8,
+        "lon": 106.7,
+        "capacity": 377,
+        "country": "Indonesia",
+    },
+    {
+        "name": "Kamojang",
+        "lat": -7.1,
+        "lon": 107.8,
+        "capacity": 235,
+        "country": "Indonesia",
+    },
+    {
+        "name": "Dieng",
+        "lat": -7.2,
+        "lon": 109.9,
+        "capacity": 60,
+        "country": "Indonesia",
+    },
+    {
+        "name": "Makiling-Banahaw",
+        "lat": 14.1,
+        "lon": 121.2,
+        "capacity": 458,
+        "country": "Philippines",
+    },
+    {
+        "name": "Tiwi",
+        "lat": 13.5,
+        "lon": 123.7,
+        "capacity": 330,
+        "country": "Philippines",
+    },
+    {
+        "name": "Bac-Man",
+        "lat": 13.1,
+        "lon": 124.0,
+        "capacity": 150,
+        "country": "Philippines",
+    },
+    {
+        "name": "Palayan",
+        "lat": 13.0,
+        "lon": 121.2,
+        "capacity": 135,
+        "country": "Philippines",
+    },
+    {
+        "name": "Nigorikawa",
+        "lat": 31.8,
+        "lon": 131.3,
+        "capacity": 30,
+        "country": "Japan",
+    },
+    {
+        "name": "Hatchobaru",
+        "lat": 33.1,
+        "lon": 131.2,
+        "capacity": 112,
+        "country": "Japan",
+    },
+    {
+        "name": "Matsukawa",
+        "lat": 39.9,
+        "lon": 141.0,
+        "capacity": 23,
+        "country": "Japan",
+    },
+    {
+        "name": "Yangbajing",
+        "lat": 30.1,
+        "lon": 90.5,
+        "capacity": 25,
+        "country": "China",
+    },
+    {"name": "Linyi", "lat": 35.1, "lon": 118.3, "capacity": 15, "country": "China"},
+    # Turkey
+    {
+        "name": "Kızıldere",
+        "lat": 37.9,
+        "lon": 28.3,
+        "capacity": 165,
+        "country": "Turkey",
+    },
+    {
+        "name": "Germencik",
+        "lat": 37.9,
+        "lon": 27.6,
+        "capacity": 75,
+        "country": "Turkey",
+    },
+    {"name": "Tuzla", "lat": 38.5, "lon": 26.9, "capacity": 80, "country": "Turkey"},
+    {
+        "name": "Buharkent",
+        "lat": 37.9,
+        "lon": 28.7,
+        "capacity": 60,
+        "country": "Turkey",
+    },
+    # Africa
+    {"name": "Olkaria", "lat": -0.9, "lon": 36.3, "capacity": 820, "country": "Kenya"},
+    {"name": "Menengai", "lat": -0.2, "lon": 36.0, "capacity": 105, "country": "Kenya"},
+    {
+        "name": "Aluto-Langano",
+        "lat": 7.8,
+        "lon": 38.8,
+        "capacity": 7,
+        "country": "Ethiopia",
+    },
+    {
+        "name": "Bouillante",
+        "lat": 16.1,
+        "lon": -61.7,
+        "capacity": 15,
+        "country": "Guadeloupe",
+    },
+    # Oceania
+    {
+        "name": "Ngatamariki",
+        "lat": -38.6,
+        "lon": 176.0,
+        "capacity": 100,
+        "country": "New Zealand",
+    },
+    {
+        "name": "Wairakei",
+        "lat": -38.6,
+        "lon": 176.1,
+        "capacity": 181,
+        "country": "New Zealand",
+    },
+    {
+        "name": "Rotokawa",
+        "lat": -38.6,
+        "lon": 176.2,
+        "capacity": 132,
+        "country": "New Zealand",
+    },
+    {
+        "name": "Mokai",
+        "lat": -38.6,
+        "lon": 175.8,
+        "capacity": 110,
+        "country": "New Zealand",
+    },
+]
+
+# ============================================================================
+# CREATE THE MAP
+# ============================================================================
+
+# Set up the figure
+fig = plt.figure(figsize=(18, 10))
+ax = plt.axes(projection=ccrs.Robinson(central_longitude=0))
+
+# Add map features
+ax.add_feature(cfeature.LAND, facecolor="#f5f5dc", edgecolor="#333333", linewidth=0.5)
+ax.add_feature(cfeature.OCEAN, facecolor="#e0f0ff")
+ax.add_feature(cfeature.COASTLINE, linewidth=0.8, edgecolor="#333333")
+ax.add_feature(cfeature.BORDERS, linestyle=":", linewidth=0.5, edgecolor="#666666")
+ax.add_feature(cfeature.LAKES, facecolor="#e0f0ff", edgecolor="#333333", linewidth=0.3)
+ax.add_feature(cfeature.RIVERS, edgecolor="#89cff0", linewidth=0.3)
+
+# Add gridlines
+gl = ax.gridlines(
+    crs=ccrs.PlateCarree(),
+    draw_labels=True,
+    linewidth=0.5,
+    color="#cccccc",
+    alpha=0.5,
+    linestyle="--",
+)
+gl.top_labels = False
+gl.right_labels = False
+gl.xlabel_style = {"size": 8, "color": "#333333"}
+gl.ylabel_style = {"size": 8, "color": "#333333"}
+
+# ============================================================================
+# PLOT GEOTHERMAL FIELDS
+# ============================================================================
+
+# Define size scaling for capacity (MW)
+min_size = 20
+max_size = 200
+capacities = [f["capacity"] for f in geothermal_fields]
+min_cap = min(capacities) if capacities else 1
+max_cap = max(capacities) if capacities else 1
+
+
+def get_marker_size(capacity):
+    """Scale marker size based on capacity (MW)"""
+    if max_cap == min_cap:
+        return min_size
+    normalized = (capacity - min_cap) / (max_cap - min_cap)
+    return min_size + normalized * (max_size - min_size)
+
+
+# Plot each field (WITHOUT name labels)
+for field in geothermal_fields:
+    # Transform coordinates to map projection
+    x, y = ax.projection.transform_point(field["lon"], field["lat"], ccrs.PlateCarree())
+
+    # Determine color by region
+    if field["country"] in ["USA", "Mexico"]:
+        color = "#e74c3c"  # Red - Americas
+    elif field["country"] in ["Italy", "Iceland", "France"]:
+        color = "#3498db"  # Blue - Europe
+    elif field["country"] in ["Indonesia", "Philippines", "Japan", "China"]:
+        color = "#2ecc71"  # Green - Asia
+    elif field["country"] in ["Turkey"]:
+        color = "#f39c12"  # Orange - Turkey
+    elif field["country"] in ["Kenya", "Ethiopia", "Guadeloupe"]:
+        color = "#9b59b6"  # Purple - Africa
+    elif field["country"] in ["New Zealand"]:
+        color = "#ffff00"  # Yellow - Oceania
+    else:
+        color = "#e74c3c"  # Red - Other
+
+    # Plot with size scaled by capacity
+    size = get_marker_size(field["capacity"])
+    ax.scatter(
+        x,
+        y,
+        s=size,
+        color=color,
+        alpha=0.7,
+        edgecolors="black",
+        linewidth=0.8,
+        zorder=5,
+    )
+
+    # REMOVED: All field name labels have been removed
+    # The following code block has been commented out:
+    # if field["capacity"] > 100 or field["country"] in ["Turkey", "Iceland"]:
+    #     ax.text(
+    #         x,
+    #         y + size / 2 + 5,
+    #         field["name"],
+    #         fontsize=6,
+    #         ha="center",
+    #         va="bottom",
+    #         bbox=dict(boxstyle="round,pad=0.1", facecolor="white", alpha=0.6),
+    #         zorder=10,
+    #     )
+
+# ============================================================================
+# ADD MAJOR GEOTHERMAL BELTS
+# ============================================================================
+
+# Define geothermal belts as polygons or lines
+belts = [
+    # Ring of Fire
+    {
+        "name": "Ring of Fire",
+        "coords": [
+            (165, 60),
+            (170, 50),
+            (175, 40),
+            (180, 30),
+            (175, 20),
+            (170, 10),
+            (165, 0),
+            (160, -10),
+            (155, -20),
+            (150, -30),
+            (145, -40),
+            (140, -50),
+            (135, -60),
+        ],
+        "color": "#e74c3c",
+        "alpha": 0.15,
+    },
+    # East African Rift
+    {
+        "name": "East African Rift",
+        "coords": [
+            (35, -5),
+            (36, 0),
+            (37, 5),
+            (38, 10),
+            (39, 15),
+            (40, 20),
+            (41, 25),
+            (42, 30),
+        ],
+        "color": "#9b59b6",
+        "alpha": 0.2,
+    },
+    # Mediterranean-Alpine Belt
+    {
+        "name": "Mediterranean Belt",
+        "coords": [
+            (-5, 35),
+            (5, 38),
+            (10, 40),
+            (15, 42),
+            (20, 42),
+            (25, 40),
+            (30, 38),
+            (35, 37),
+            (40, 37),
+        ],
+        "color": "#3498db",
+        "alpha": 0.2,
+    },
+]
+
+# Plot belts
+for belt in belts:
+    transformed_coords = []
+    for lon, lat in belt["coords"]:
+        x, y = ax.projection.transform_point(lon, lat, ccrs.PlateCarree())
+        transformed_coords.append((x, y))
+
+    # Plot as a shaded area with gradient
+    ax.plot(
+        [p[0] for p in transformed_coords],
+        [p[1] for p in transformed_coords],
+        color=belt["color"],
+        linewidth=3,
+        alpha=belt["alpha"],
+        zorder=0,
+    )
+
+    # Add belt label
+    mid_idx = len(transformed_coords) // 2
+    ax.text(
+        transformed_coords[mid_idx][0],
+        transformed_coords[mid_idx][1] - 300000,
+        belt["name"],
+        fontsize=9,
+        ha="center",
+        va="bottom",
+        color="darkred",
+        fontweight="bold",
+        alpha=0.7,
+    )
+
+# ============================================================================
+# ADD LEGEND
+# ============================================================================
+
+# Create custom legend elements
+legend_elements = [
+    Line2D(
+        [0],
+        [0],
+        marker="o",
+        color="w",
+        label="North America",
+        markerfacecolor="#e74c3c",
+        markersize=10,
+        markeredgecolor="black",
+    ),
+    Line2D(
+        [0],
+        [0],
+        marker="o",
+        color="w",
+        label="Europe",
+        markerfacecolor="#3498db",
+        markersize=10,
+        markeredgecolor="black",
+    ),
+    Line2D(
+        [0],
+        [0],
+        marker="o",
+        color="w",
+        label="Asia",
+        markerfacecolor="#2ecc71",
+        markersize=10,
+        markeredgecolor="black",
+    ),
+    Line2D(
+        [0],
+        [0],
+        marker="o",
+        color="w",
+        label="Turkey",
+        markerfacecolor="#f39c12",
+        markersize=10,
+        markeredgecolor="black",
+    ),
+    Line2D(
+        [0],
+        [0],
+        marker="o",
+        color="w",
+        label="Africa",
+        markerfacecolor="#9b59b6",
+        markersize=10,
+        markeredgecolor="black",
+    ),
+    Line2D(
+        [0],
+        [0],
+        marker="o",
+        color="w",
+        label="Oceania",
+        markerfacecolor="#ffff00",
+        markersize=10,
+        markeredgecolor="black",
+    ),
+]
+
+# Size legend for capacity
+size_elements = []
+capacity_labels = [10, 100, 500, 800]
+for cap in capacity_labels:
+    size = get_marker_size(cap)
+    size_elements.append(
+        Line2D(
+            [0],
+            [0],
+            marker="o",
+            color="w",
+            label=f"{cap} MW",
+            markerfacecolor="#95a5a6",
+            markersize=np.sqrt(size / 2),
+            markeredgecolor="black",
+        )
+    )
+
+# Add legends
+legend1 = ax.legend(
+    handles=legend_elements,
+    loc="lower left",
+    title="Region",
+    fontsize=8,
+    title_fontsize=9,
+    bbox_to_anchor=(0.02, 0.02),
+    framealpha=0.9,
+)
+ax.add_artist(legend1)
+
+legend2 = ax.legend(
+    handles=size_elements,
+    loc="lower right",
+    title="Installed Capacity",
+    fontsize=8,
+    title_fontsize=9,
+    bbox_to_anchor=(0.98, 0.02),
+    framealpha=0.9,
+)
+ax.add_artist(legend2)
+
+# ============================================================================
+# ADD TITLE AND METADATA
+# ============================================================================
+
+plt.title(
+    "Major Geothermal Fields Worldwide\nInstalled Capacity and Distribution by Region",
+    fontsize=16,
+    fontweight="bold",
+    pad=20,
+)
+
+# Add subtitle with statistics
+total_capacity = sum(f["capacity"] for f in geothermal_fields)
+num_fields = len(geothermal_fields)
+num_countries = len(set(f["country"] for f in geothermal_fields))
+
+plt.figtext(
+    0.5,
+    0.02,
+    f"Total: {num_fields} fields in {num_countries} countries | Total Capacity: {total_capacity} MW",
+    ha="center",
+    fontsize=10,
+    style="italic",
+)
+
+# ============================================================================
+# SAVE AND SHOW
+# ============================================================================
+
+plt.tight_layout()
+plt.savefig(
+    "major_geothermal_fields_world_map.png",
+    dpi=300,
+    bbox_inches="tight",
+    facecolor="white",
+    edgecolor="none",
+)
+plt.show()
+
+print(f"\n✅ Geothermal fields map created successfully!")
+print(f"📊 Total fields plotted: {num_fields}")
+print(f"🌍 Countries represented: {num_countries}")
+print(f"⚡ Total installed capacity: {total_capacity} MW")
+print(f"📁 File saved as: major_geothermal_fields_world_map.png")
+
+# Print summary by region
+print("\n📍 Summary by region:")
+regions = {
+    "North America": ["USA", "Mexico"],
+    "Europe": ["Italy", "Iceland", "France"],
+    "Asia": ["Indonesia", "Philippines", "Japan", "China"],
+    "Turkey": ["Turkey"],
+    "Africa": ["Kenya", "Ethiopia", "Guadeloupe"],
+    "Oceania": ["New Zealand"],
+}
+
+for region, countries in regions.items():
+    region_fields = [f for f in geothermal_fields if f["country"] in countries]
+    if region_fields:
+        reg_cap = sum(f["capacity"] for f in region_fields)
+        reg_count = len(region_fields)
+        print(f"   {region}: {reg_count} fields, {reg_cap} MW")
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
